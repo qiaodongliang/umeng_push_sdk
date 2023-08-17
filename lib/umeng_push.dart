@@ -16,7 +16,7 @@ class UmengPushSdk {
     return await _channel.invokeMethod(_METHOD_REGISTER, {'iOSAppkey': iOSAppkey, 'iOSChannel': iOSChannel});
   }
 
-  ///设置deviceToken回调，仅支持Android
+  ///设置deviceToken回调
   static void setTokenCallback(Callback? callback) {
     _callback._deviceToken = callback;
   }
