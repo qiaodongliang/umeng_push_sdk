@@ -59,59 +59,48 @@ android {
 
 证书配置请参考文档：https://developer.umeng.com/docs/67966/detail/66748
 
-AppDelegate.m中需要进行的配置：
+AppDelegate.swift中需要进行的配置：
 
 1. didFinishLaunchingWithOptions方法中设置消息代理
 
-```oc
+```swift
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)application
-    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [GeneratedPluginRegistrant registerWithRegistry:self];
-    [UNUserNotificationCenter currentNotificationCenter].delegate=self;
-    return [super application:application didFinishLaunchingWithOptions:launchOptions];
-}
+override func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+	...
+        UNUserNotificationCenter.current().delegate = self
+	...
+    }
 ```
 
 2. 处理willPresentNotification方法回调
 
-```oc
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
-
-    NSDictionary * userInfo = notification.request.content.userInfo;
-
-    [UmengPushSdkPlugin didReceiveUMessage:userInfo];
-    if ([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
-        [UMessage setAutoAlert:NO];
-        //应用处于前台时的远程推送接收
-        //必须加这句代码
-        [UMessage didReceiveRemoteNotification:userInfo];
-    } else {
-        //应用处于前台时的本地推送接收
+```swift
+override func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        let userInfo: [AnyHashable: Any] = notification.request.content.userInfo
+        UmengPushSdkPlugin.didReceiveUMessage(userInfo)
+        completionHandler([.sound, .badge, .alert])
     }
-
-    // 控制推送消息是否直接在前台显示
-   completionHandler(UNNotificationPresentationOptionSound|UNNotificationPresentationOptionBadge|UNNotificationPresentationOptionAlert);
-}
 ```
 
 3. 处理didReceiveNotificationResponse方法回调
 
-```oc
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler {
-    NSDictionary * userInfo = response.notification.request.content.userInfo;
-		//应用后台或者关闭时收到消息，回调flutter层onNotificationOpen方法
-    [UmengPushSdkPlugin didOpenUMessage:userInfo];
-
-    if ([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
-        //应用处于后台时的远程推送接收
-        //必须加这句代码
-        [UMessage didReceiveRemoteNotification:userInfo];
-    } else {
-        //应用处于后台时的本地推送接收
+```swift
+override func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo: [AnyHashable: Any] = response.notification.request.content.userInfo
+        UmengPushSdkPlugin.didOpenUMessage(userInfo)
     }
-}
+```
+
+4. 处理didRegisterForRemoteNotificationsWithDeviceToken方法回调
+
+```swift
+override func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        UmengPushSdkPlugin.didRegisterDeviceToken(deviceToken)
+    }
 ```
 
 ## 使用 
