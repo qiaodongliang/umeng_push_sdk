@@ -38,7 +38,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
  * 推送Flutter插件类
  */
 public class UmengPushSdkPlugin implements FlutterPlugin, MethodCallHandler {
-    private static final String TAG = "Flutter";
+    private static final String TAG = "UPush.Flutter";
 
     private Context mContext;
     private MethodChannel mChannel;

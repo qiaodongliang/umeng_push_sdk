@@ -1,6 +1,6 @@
 name: umeng_push_sdk
 description: upush sdk plugin.
-version: 2.1.0
+version: 2.2.0
 homepage: https://www.umeng.com/
 
 environment:
@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  umeng_common_sdk: ^1.2.7
 
 dev_dependencies:
   flutter_test:

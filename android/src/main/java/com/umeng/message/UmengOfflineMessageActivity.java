@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class UmengOfflineMessageActivity extends Activity {
 
-    private static final String TAG = "OfflineMessage";
+    private static final String TAG = "UPush.OfflineMessage";
 
     private final UmengNotifyClick mNotificationClick = new UmengNotifyClick() {
         @Override
